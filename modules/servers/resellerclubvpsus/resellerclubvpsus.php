@@ -38,11 +38,11 @@ function resellerclubvpsus_ConfigOptions() {
     $vps_plan_names = array();
     $active_products = $orderbox->api('GET', '/products/category-keys-mapping.json', array(), $response, 'resellerclubvpslinuxus', 'configoptions');
 
-    if (in_array('vpslinuxus', $active_products['hosting'])) {
+    if (in_array('virtualserverlinuxus', $active_products['hosting'])) {
         $plans = $orderbox->api('GET', '/products/plan-details.json', array(), $response, 'resellerclubvpslinuxus', 'configoptions');
 
-        if (array_key_exists('vpslinuxus', $plans)) {
-            $vps_plans = $plans['vpslinuxus'];
+        if (array_key_exists('virtualserverlinuxus', $plans)) {
+            $vps_plans = $plans['virtualserverlinuxus'];
             foreach ($vps_plans as $plan_id => $plan) {
                 $vps_plan_names[] = 'Linux ' . ' - ' . $plan['plan_name'] . ' - ' . $plan_id;
             }
@@ -109,7 +109,7 @@ function resellerclubvpsus_CreateAccount($params) {
         if ('windows' == $plan_pieces['type']) {
             $api_path_order_add = '/vps/windows/add.json';
         } else {
-            $api_path_order_add = '/vps/linux/add.json';
+            $api_path_order_add = '/virtualserver/linux/us/add.json';
         }
 
         $order_api_result = $orderbox->api('POST', $api_path_order_add, $order_details, $response, 'resellerclubvpslinuxus', 'create');
@@ -144,7 +144,7 @@ function resellerclubvpsus_SuspendAccount($params) {
     global $orderbox;
 
     try {
-        $api_path = '/vps/linux/orderid.json';
+        $api_path = '/virtualserver/linux/us/orderid.json';
         $order_id_result = $orderbox->api('GET', $api_path, array('domain-name' => $params['domain']), $response, 'resellerclubvpslinuxus', 'suspendaccount');
 
         if (is_array($order_id_result) && array_key_exists('status', $order_id_result) && strtolower($order_id_result['status']) == 'error') {
@@ -173,7 +173,7 @@ function resellerclubvpsus_UnsuspendAccount($params) {
     global $orderbox;
 
     try {
-        $api_path = '/vps/linux/orderid.json';
+        $api_path = '/virtualserver/linux/us/orderid.json';
         $order_id_result = $orderbox->api('GET', $api_path, array('domain-name' => $params['domain']), $response, 'resellerclubvpslinuxus', 'unsuspendaccount');
 
         if (is_array($order_id_result) && array_key_exists('status', $order_id_result) && strtolower($order_id_result['status']) == 'error') {
@@ -203,7 +203,7 @@ function resellerclubvpsus_TerminateAccount($params) {
 
     try {
 
-        $api_path = '/vps/linux/orderid.json';
+        $api_path = '/virtualserver/linux/us/orderid.json';
         $order_id_result = $orderbox->api('GET', $api_path, array('domain-name' => $params['domain']), $response);
 
         if (is_array($order_id_result) && array_key_exists('status', $order_id_result) && strtolower($order_id_result['status']) == 'error') {
@@ -233,7 +233,7 @@ function resellerclubvpsus_Renew($params) {
     global $orderbox;
 
     try {
-        $api_path = '/vps/linux/orderid.json';
+        $api_path = '/virtualserver/linux/us/orderid.json';
         $order_id_result = $orderbox->api('GET', $api_path, array('domain-name' => $params['domain']), $response, 'resellerclubvpslinuxus', 'renew');
 
         if (is_array($order_id_result) && array_key_exists('status', $order_id_result) && strtolower($order_id_result['status']) == 'error') {
@@ -318,7 +318,7 @@ function resellerclubvpsus_ChangePackage($params) {
 
     try {
 
-        $api_path = '/vps/linux/orderid.json';
+        $api_path = '/virtualserver/linux/us/orderid.json';
         $order_id_result = $orderbox->api('GET', $api_path, array('domain-name' => $params['domain']), $response, 'resellerclubvpslinuxus', 'changepackage');
 
         if (is_array($order_id_result) && array_key_exists('status', $order_id_result) && strtolower($order_id_result['status']) == 'error') {
@@ -337,7 +337,7 @@ function resellerclubvpsus_ChangePackage($params) {
                 'months' => $months,
             );
 
-            $api_path = '/vps/linux/modify-pricing.json';
+            $api_path = '/virtualserver/linux/us/modify-pricing.json';
             $order_api_result = $orderbox->api('GET', $api_path, $order_details, $response, 'resellerclubvpslinuxus', 'renew');
 
             if (is_array($order_api_result) && strtolower($order_api_result['status']) == 'error') {
@@ -374,7 +374,7 @@ function resellerclubvpsus_ClientArea($params) {
 
     try {
         $is_processing = false;
-        $api_path = '/vps/linux/orderid.json';
+        $api_path = '/virtualserver/linux/us/orderid.json';
         $order_id_result = $orderbox->api('GET', $api_path, array('domain-name' => $params['domain']), $response, 'resellerclubvpslinuxus', 'clientarea');
 
 
@@ -382,7 +382,7 @@ function resellerclubvpsus_ClientArea($params) {
             $is_processing = true;
         } else {
             $order_id = $order_id_result;
-            $api_path = '/vps/linux/details.json';
+            $api_path = '/virtualserver/linux/us/details.json';
             $order_details = $orderbox->api('GET', $api_path, array('order-id' => $order_id), $response, 'resellerclubvpslinuxus', 'clientarea');
 
             if (is_array($order_details) && array_key_exists('status', $order_details)) {
@@ -399,9 +399,9 @@ function resellerclubvpsus_ClientArea($params) {
             $smarty->assign('vps_status', 'Processing...');
         } else {
 //            if ('plesk' == $order_details['panel']) {
-//                $cp_url = 'http://' . $order_details['ipaddress'] . ':8880';
+//                $cp_url = 'https://' . $order_details['ipaddress'] . ':8880';
 //            } else {
-//                $cp_url = 'http://' . $order_details['ipaddress'] . '/cpanel';
+//                $cp_url = 'https://' . $order_details['ipaddress'] . '/cpanel';
 //            }
             $ssl_ip_address = "";
             foreach ($order_details['addon_details'] as $addon_detail) {
@@ -509,7 +509,7 @@ if( !function_exists('_get_control_panel_link') ) {
         if( 'windows' == $plan_pieces['type'] ) {
             $api_path_orderid_from_domain = '/vps/windows/orderid.json';
         } else {
-            $api_path_orderid_from_domain = '/vps/linux/orderid.json';
+            $api_path_orderid_from_domain = '/virtualserver/linux/us/orderid.json';
         }
         $order_id_result = $orderbox->api( 'GET' , $api_path_orderid_from_domain , array( 'domain-name' => $params['domain'] ) , $response , 'resellerclubvpslinuxus' , 'clientarea' );
 
@@ -541,7 +541,7 @@ if( !function_exists('_get_control_panel_link') ) {
         } else {
             $authentication_token = $authentication_token_result;
         }
-        return $control_panel_url = "http://" . $reseller_branding_url . "/servlet/ManageServiceServletForAPI?auth-token={$authentication_token}&orderid={$order_id}";
+        return $control_panel_url = "https://" . $reseller_branding_url . "/servlet/ManageServiceServletForAPI?auth-token={$authentication_token}&orderid={$order_id}";
     } else {
         throw new Exception( $error );
     }
